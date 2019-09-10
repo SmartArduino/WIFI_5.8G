@@ -1,0 +1,126 @@
+#// ALPHABEAM DM Script Extension Interpreter example
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+    use  i,j,k,ms       # 사용할 변수는 사용전 선언함, 4바이트 
+    use  addr,data      # signed integer 
+    use  result       
+    usef angle          # float형 변수 선언        
+    usef value
+    lib  "script_lib.dse"
+    memo array[4096]    # 4096 size memory allocation
+
+:main
+    file "d:\out.txt"
+       
+ :label                 # label은 항상 :로 시작하며 유일해야 함.
+    set  i,1            # i=1
+    set  j,1
+    set  k,1
+    set  ms,100
+    set  angle, 0.0     # angle=0.0
+    rnd  k              # k = random
+    memw array, i, k    # array[i] = k
+    memr array, i, j    # j = array[i]    
+    add  i,j,k          # i=j+k
+    inc  i              # i++
+    sub  i,j,100        # i=j-100
+    mul  i,j,k          # i=j*k
+    div  i,i,1          # i=i/1
+    dec  i              # i--
+    and  i,i,0x100      # i=i&0x100,    16진수는 0x를 붙임
+    or   i,i,0b10000000 # i=i|128,      2진수는 0xb를 붙임
+    xor  i,i,1          # i=i^1
+    inv  i,j            # i=~j
+    rsf  i,i,10         # i=<<10
+    lsf  i,i,10         # i=i>>10
+    gos  sub1           # go subroutine sub1
+    gos  print
+    if   i > j,label    # if i>j then goto label, 가능한 비교문 
+
+                        # "==, !=, >, >=, <, <="
+    cls                 # AlphaDM의 MDP 화면 clear
+    set  addr, 0x40000020
+    gos  memDump        # mem dump 0x40000020 4 32 출력
+    gos  getNumber      # dump내용중 data값 가져오기 
+    gos  dispMemData    # 가져온 데이터 출력하기
+    gos  drawSinGraph   # sine graph 그리기
+    go   endcode
+ :endcode    
+end
+
+:sub1 
+    wait ms             # ms (millisecond) 동안 대기
+ret                     # RETurn, 서브루틴 종료, caller로 돌아감.
+
+:print
+    pro  console        # PRint Out,    화면 출력, 가능한 출력방향: 
+                        # ==>console / shell / msgbox / file / graph
+                        # console은 AlphaDM의 MDP에 출력, 
+                        # shell은 모뎀에 shell명령으로 전달
+                        # msgbox 는 AlphaDM의 메시지 팝업창으로 표시
+                        # file은 file명령으로 지정한 파일로 저장
+                        # graph는 DM의 graph로 출력
+    prs  "example"      # PRint String, 문자열 버퍼 출력
+    prd  i              # PRint Decimal,10진수 숫자 버퍼출력
+    prh  j              # PRint Hexa,   16진수 숫자 버퍼출력
+    prb  k              # PRint Binary, 2진수 숫자 버퍼출력
+    pre                 # PRint End,    버퍼내용을 지정된 출력방향으로
+                        # 출력 
+ret
+
+:memDump
+    pro  shell
+    prs  "mem dump "
+    prh  addr
+    prs  " 4 32"
+    pre
+ret
+        
+:getNumber
+    gets                # shell명령전송 시점부터 MDP에 기록된 내용중 한문자열 가져옴
+                        # "inc> mem dump 40000034 4 32" 가져오고 버림
+    gets                # "" 를 가져오고 버림
+    gets                # "40000034: 400653DA" 를 가져옴--> 주소:데이터 형식임
+    getn data, result, 16   # 가져온 문자열에서 첫번째 단어를 찾고 16진수 숫자로 변환(진수는 2/10/16지원)
+                            # address 부분으로 skip
+    getn data, result, 16   # data
+ret    
+    
+:dispMemData
+    pro  file
+    prs  "addr=0x"
+    prh  addr
+    prs  ", value=0x"
+    prh  data
+    prs  "\n"
+    pre    
+ret    
+    
+:drawSinGraph    
+    set   angle, 0
+ :loopSine    
+    sin   value, angle              # value = sin(angle)
+    mul   value, value, 1000        # value *= 1000
+    pro   graph
+    prd   value
+    pro   console
+    prf   angle
+    prs   ","
+    prf   value
+    pre     
+    add   angle, angle, 0.314159    # 1 deg 증가
+    if    angle < 6.28, loopSine    # 360도 까지 반복 
+ret    

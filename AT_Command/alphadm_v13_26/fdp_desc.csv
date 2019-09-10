@@ -1,0 +1,181 @@
+*PHYCNF ,Tx Phy data confirm event interrupt. In case of either Tx done or Tx abort.
+,
+TXEAPOL,transmission Tx EAPOL Frame
+TLLCTER,type error in LLC Encapsulation
+TLLCHER,header error in LLC Encapsulation
+SELHMDR,select highest mandatory data rate
+SELMDR1,select mandatory data rate
+SELHBDR,select highest bss basic data rate
+SELBDR1,select bss basic data rate
+SELBDR2,select bss basic data rate
+SELSDR1,select supported data rate
+SELSDR2,select supported data rate
+MPDUAGG,MPDU aggregation
+TXRTS,build RTS frame
+*CTS,build CTS frame
+*NULL,build NULL data frame
+@rTXDSEQ,Tx data sequence number in A-MPDU retransmission
+@TXDSEQ,Tx data sequence number
+TXOPREQ,build TXOP frame exchange sequence
+FES1100,EDCA + 11G + NORMAL-ACK + TXOP '0'
+FES1101,EDCA + 11G + NORMAL-ACK + TXOP
+FES1110,EDCA + 11N + BLOCK-ACK + TXOP '0'
+FES1111,EDCA + 11N + BLOCK-ACK + TXOP
+TXMSEQ,Tx management sequence number
+CNFSEQN,LMAC/PHY transmission confirm sequence number
+TXOPDON,TXOP FES transmission done
+@TXTRAF,arrived Tx traffic from Host
+SDUDROP,drop SDU
+*PHYCNF,LMAC/PHY transmission confirm
+!TXLABOT,LMAC transmission abort. when retry limitout or txop limit out
+*TXOK,LMAC transmission success
+ABTMAT,LMAC successful transmission pointer in abort
+!RETOUT,invoked LMAC retry limitout interrupt
+LDEWSUC,success LMAC descriptor writing
+LDINFO,writed LMAC descriptor information
+LDADDR,writed current LMAC descriptor address
+VECINFO,writed tx vector information
+NOTLBF,is not HSGD loopback frame
+CNFADDR,LMAC/PHY transmission confirm address
+MLMEREQ,request management frame transmission from MLME task to TX task
+GRPPASS,scheduled group address queue
+GRPPEND,pend group address queue
+GRPDROP,drop group address frame
+UNKPEND,pend unknown address queue
+UNKDROP,drop unknown address queue
+UNIPEND,pend unicast address queue
+UNIDROP,drop unicast address queue
+SCANPRB,scheduled probe request frame queue for scan
+T_CAL1,tx time calculation
+T_CAL2,tx time calculation
+ENQSTAT,queue statistics in en-queue
+DEQSTAT,queue statistics in de-queue
+BEACONQ,queueing beacon queue
+GROUPQ,queueing group address queue
+STAQ,queueing unicast station queue
+UNKNOWQ,queueing unknown address queue
+,
+@TXADDR,transmit data buffer address (SDU address)
+!BFLOCK,data buffer lock
+BUFIDX,tx data buffer lock/free information
+BUFBM0,tx data buffer bitmap
+BUFBM1,tx data buffer bitmap
+BUFBM2,tx data buffer bitmap
+!BFFREE,data buffer free
+LMACADD,writed LMAC descriptor address
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+H_DOZE,HSGD is going Doze
+L_RESET,LMAC Register Reset
+H_RESET,HSGD Register Reset
+L_AWAKE,LMAC Register Restore
+H_AWAKE,HSGD Register Restore
+SFPS_EN,Soft Power Save Enter
+SFPS_EX,Soft Power Save Exit
+MSG_DOZ,Doze MSG Indication(TO HOST)
+MSG_ACT,Active MSG Indication(TO HOST)
+*PS_POLL,PS POLL Frame Build
+@DTIM_T,
+@DTIM_F,
+!WIN_STT,Beacon Window Start Interrupt
+!PSON,Power Save ON in BSS(under AP Mode)
+!PSOFF,Power Save OFF in BSS(under AP Mode)
+TxNulTG,TX Send Null Frame(Trigger)
+TxNulPP,TX Send Null Frame(PS-Poll)
+TxFrmPP,TX Send Frame(PS-Poll)
+,
+SHUTDN,Shut Down
+!HWPSEN,Hard Power Save Enter
+!HWPSEX,Hard Power Save Exit
+@GA_CNF,Group Address Frame is transmitted
+*DTIMSET,DTIM is setted up
+@TX_DTIM,TX DTIM
+UAPSD_AC,U-APSD Check of STAs
+TxFrmTG,TX Send Frame(Trigger)
+,
+*TIM_BST,TIM Build
+!BCNEMP,Beacon Buffer Empty
+*WINEND,Beacon Window END
+,
+*TIM_UNI,Unicast TIM
+!P2P,P2P Power Save Check
+TIM@,Build TIM
+,
+@TX_AC,Send Trigger Frame
+,
+,
+,
+,
+,
+RNODESC,No more rx descriptor
+RXEAPOL,Received EAPOL
+DSECDEC,Received frame has Security Header and it should be decoded.
+WRAPPER,Received Control wrapper frame
+BAR,Received Block Ack Request frame
+BA,Received Block Ack frame
+PSPOLL,Received PS-POLL frame
+RTS,Received RTS frame
+CTS,Received CTS frame
+ACK,Received ACK frame
+CFEND,Received CF-END frame
+CFENDAK,Received CF-END + CF-ACK frame
+CTYPEER,Received Error Control frame
+DSERR,Error parsing mac address from received frame.
+RCVNULL,Received NULL data frame
+FR_FIND,Defragment Find
+FR_NOFI,Defragment No Find
+ADDFAIL,Defragment failed adding fragmented frame
+FSECDEC,Received Fragmented frame has Security Header
+DEFDONE,Defragment is done.
+DEF_A_F,Defragment alloc fail
+PDUFREE,Rx Buffer free
+RCVDATA,Received Data frame
+RCVMGMT,Received Management frame
+RCVCTRL,Received Control frame
+RELAY,Received frame is relay packet.
+MDUPL,Received frame has duplicated Sequence Number.
+FRAG,Received Management frame is fragmented.
+MBUFROT,Buffer Rotation because of end address of data buffer
+MSECDEC,Received Management frame has Security Header.
+RBFFREE,Rx Buffer free
+RBFLOCK,Rx Buffer Lock
+RLDADDR,Rx LMAC Descriptor Address
+,
+RBUFBM,Rx Buffer manager Bitmap
+BASCDAT,Scoreboad Processing for received data frame
+SECTN1,Valid Sequence Number : Sequence Number of Received data frame is in the buffer size
+SECTN2,Valid Sequence Number : Sequence Number of Received data frame is out of the buffer size
+SECTN3,Invalid Sequence Number
+BAREDAT,Block Ack Reordering for received data frame
+PEND,Received data frame should have been pend.
+BADUPL,Received Block Ack Pending data frame is duplicated.
+INSERT,Received Block Ack Pending data frame is inserted.
+BASCBAR,Scoreboad Processing for received Block Ack Request frame
+BAREBAR,Block Ack Reordering for received Block Ack Request frame
+ROBBA,Send to host all data frame on Robust ADDBA Request
+BAFULL,Block Ack frame handling for Rx Buffer Full
+RXBATM,Rx Block Ack Timer
+DELBA,Issue DELBA
+DLBAFRM,Issue DELBA
+DIFFSN,Sequence Number
+BMSHIFT,
+MOVWINR,Moved win start R
+MOVWINB,Moved win start B
+INSERT,Inserted Sequence Number
+BASSN,Block Ack SSN
+STTRSN,win start R Sequence Number
+BITMAP,Bitmap of Block Ack
+STTBSN,win start B Sequence Number
+RCVBM0,Received Block Ack bitmap [3:0]
+RCVBM1,Received Block Ack bitmap [7:4]
+*DUP_UNI,Duplicated Unicast Frame data
+*DUP_NUL,Duplicated Null Frame data

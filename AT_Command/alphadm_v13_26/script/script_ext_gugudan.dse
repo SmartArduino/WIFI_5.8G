@@ -1,0 +1,70 @@
+#// ALPHABEAM DM Script Extension Interpreter example (구구단)
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+#       구구단 예제
+:main
+    use i
+    use j
+    use k
+    use ms
+    
+    pro msgbox
+    prs "start script"
+    pre
+    
+    set i, 2
+    set j, 1
+    set ms, 100
+    
+    pro shell
+    prs "debug 0"   # mdp debug 출력 금지
+    pre
+    wait 100        # 모뎀이 shell명령 처리하기 위해 100ms대기 
+    
+    pro console
+    
+ :mainloop 
+    mul k, i, j
+    gos printijk
+    inc j
+    if  j > 9, inci
+    go  mainloop
+ #mainloop end
+     
+ :inci
+    prs "-----------------------\n"
+    pre
+    
+    wait ms
+    set j, 1
+    inc i
+    if  i > 9, endapp
+    go  mainloop
+ :endapp
+    pro shell
+    prs "debug 4"  
+    pre 
+end
+    
+:printijk    
+    prd i
+    prs "*"
+    prd j
+    prs "="
+    prd k
+    pre
+ ret
+    

@@ -1,0 +1,212 @@
+#connect kangap111
+>0,
+?0,0,
+:at*ict*sconn="kangap" "12345678"\x0d
+#set baud 115200
+>1,
+?0,0,OK
+:iwconfig setmib 36 115200\x0d
+#set baud 9600
+>1,
+?0,0,OK
+:iwconfig setmib 36 9600\x0d
+#wait OK
+>2,
+?0,0,OK
+:
+#wait OK
+>3,
+?0,0,OK
+:reset 1\x0d
+#flash test 200000 128\x0d
+>1,
+?0,0,
+:flash test 200000 128\x0d
+#flash otp status
+>1,
+?1000,0,OK
+:flash id\x0dflash otp status\x0dflash status_reg\x0dflash protect ?\x0d
+#wait ready
+>4,
+?0,0,*ICT*ASSOCIATED
+:
+#DM autocon disable
+>0,
+?0,0,
+:iwconfig nv_set conn_mode 0\x0d
+#apmode
+>0,
+?0,0,
+:iwconfig ap_conn dhkim_ap 6 3 1 1 12345678\x0d
+#Get Firmware Version
+>0,
+?0,0,
+:at*ict*swver=?\x0d
+#HW Power Save OFF
+>0,
+?0,0,
+:at*ict*hwps=1\x0d
+#HW Power Save ON
+>0,
+?0,0,
+:at*ict*hwps=0\x0d
+#scan
+>15,
+?5,0,*ICT*SCANRESULT
+:at*ict*scan\x0d
+#sconn
+>14,
+?0,0,*ICT*IPALLOCATED
+:at*ict*sconn="kangap" "12345678"\x0d
+#sconn SK-HOME
+>0,
+?100000,0,*ICT*IPALLOCATED
+:at*ict*sconn="SK-HOME" "12091209"\x0d
+#WPS
+>0,
+?0,0,
+:at*ict*wps_pbc=any\x0d
+#sconn standalone
+>4,
+?2,0,*ICT*IPALLOCATED
+:at*ict*sconn="Standalone" "987654321"\x0d
+#disassociate
+>0,
+?0,0,
+:at*ict*disassociate\x0d
+#SoftAP Start
+>0,
+?0,0,*ICT*APSTART:OK
+:at*ict*apstart="dhkim_ap" 6 3 1 1 "12345678"\x0d
+#SoftAP Stop
+>13,
+?0,0,*ICT*APSTOP:OK
+:at*ict*apstop\x0d
+#Adhoc  Start
+>22,
+?0,0,*ICT*ADSTART:OK
+:at*ict*adstart="SSID_adhoctest" 11\x0d
+#Adhoc  Stop
+>13,
+?0,0,*ICT*ADSTOP:OK
+:at*ict*adstop\x0d
+#Get Network Status
+>0,
+?0,0,
+:at*ict*nwstatus=?\x0d
+#ipconfig_get
+>0,
+?0,0,
+:at*ict*ipconfig=?\x0d
+#ipconfig_dhcp
+>0,
+?0,0,
+:at*ict*ipconfig=1\x0d
+#ipconfig_static
+>0,
+?0,0,
+:at*ict*ipconfig=0 192.168.1.210 255.255.255.0 192.168.1.254\x0d
+#Send DNS Query
+>0,
+?0,0,
+:at*ict*dnsquery=www.inctech.co.kr\x0d
+#Request HTTP GET
+>0,
+?0,0,
+:at*ict*httpget=http://www.inctech.co.kr:80\x0d
+#UPNP GetExternalIP
+>0,
+?0,0,
+:at*ict*upnp_extip\x0d
+#UPNP AddPortMapping
+>0,
+?0,0,
+:at*ict*upnp_addportmap=192.168.1.15 12345 54321 1\x0d
+#UPNP DelPortMapping
+>0,
+?0,0,
+:at*ict*upnp_delportmap=54321 1\x0d
+#TCP Socket Open
+>0,
+?0,0,
+:at*ict*socket=1\x0d
+#TCP Socket Connect
+>0,
+?0,0,
+:at*ict*connect=0 192.168.123.100 5000\x0d
+#TCP Socket Send
+>0,
+?0,0,
+:at*ict*send=0 192.168.123.100 5000 5 HELLO\x0d
+#TCP Socket Bind
+>0,
+?0,0,
+:at*ict*bind=0 9100\x0d
+#TCP Socket Listen
+>0,
+?0,0,
+:at*ict*listen=0\x0d
+#TCP Socket Listen Status
+>0,
+?0,0,
+:at*ict*lstatus=0\x0d
+#UDP Socket Open
+>0,
+?0,0,
+:at*ict*socket=2\x0d
+#UDP Socket Send
+>0,
+?0,0,
+:at*ict*sendto=0 192.168.123.100 9500 5 HELLO\x0d
+#UDP Socket Bind
+>0,
+?0,0,
+:at*ict*bind=0 50000\x0d
+#    Socket Close
+>0,
+?0,0,
+:at*ict*close=0\x0d
+#echo on
+>0,
+?0,0,
+:ate1\x0d
+#ping
+>0,
+?0,0,
+:ict*ping=1 192.168.1.1 32\x0d
+#sconn_dhkim
+>0,
+?0,0,
+:at*ict*sconn="dhkim" "kimdaehyun2"\x0d
+#Request Naver HTTP GET
+>0,
+?0,0,
+:at*ict*httpget=http://www.naver.co.kr:80\x0d
+#ping_dhkim
+>0,
+?0,0,
+:at*ict*ping=1000 192.168.0.1 1000\x0d
+#rate
+>0,
+?0,0,
+:at*ict*traffic=rate 11\x0d
+#ping_kangap
+>0,
+?1000000,0,RESULT
+:at*ict*ping=1 192.168.1.1 32\x0d
+#autocon disable
+>0,
+?0,0,
+:at*ict*auconmode=0 0\x0d
+#ANTenna Change
+>0,
+?0,0,
+:at *ict*setant=0\x0d
+#AMR SCAN STOP
+>53,
+?0,1000,
+:ami scan stop
+#AMR SCAN ALL
+>52,
+?0,1000,Metering Status 0x0003
+:ami scan all

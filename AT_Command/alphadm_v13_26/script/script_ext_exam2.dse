@@ -1,0 +1,68 @@
+#// ALPHABEAM DM Script Extension Interpreter example
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+    use	 addr
+    use  data
+    use  result
+    lib  "script_lib.dse"
+    
+:main
+    set  addr, 0x40000020
+    gos  debugOff
+    cls
+ :loop
+    gos  shellout
+
+    # 기대 하는 응답결과,  얻고자 하는 400653DA는 3번째 줄에 있으므로 
+    # 3개 라인을 읽는다  (gets 3번 호출)
+    # inc> mem dump 40000034 4 32
+    # 
+    # 40000034: 400653DA 
+    # OK
+    
+    gets    # skip "inc> mem dump 40000034 4 32"
+    gets    # skip ""
+    gets    # get  "40000034: 400653DA"
+    gos  getNumber
+    gos  dispMemData
+    add  addr,addr,4
+    if   addr < 0x40000040, loop
+ #end loop    
+    gos  debugOn
+end
+
+:shellout
+    pro  shell
+    prs  "mem dump "
+    prh  addr
+    prs  " 4 32"
+    pre
+ret
+
+:dispMemData
+    pro  console
+    prs  "addr=0x"
+    prh  addr
+    prs  ", value=0x"
+    prh  data
+    pre
+ret
+
+:getNumber
+    getn data, result, 16   # address
+    getn data, result, 16   # data
+ret
+    

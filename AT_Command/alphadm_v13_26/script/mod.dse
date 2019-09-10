@@ -1,0 +1,14 @@
+#// mod test 
+
+    use  i
+    usef k
+:main
+    mod i, 10, 3
+    pro console
+    prd i
+    pre
+
+    mod k, 10.0, 3.3
+    prf k
+    pre
+end

@@ -1,0 +1,74 @@
+#// lowpass filter test
+
+    usef    angle
+    usef    noise
+    usef    val
+    usef    step
+    usef    tmp
+    use     temp
+    use     idx
+    use     N
+    use     maxIdx
+    memo    buff[512]
+    
+:main
+    set     N, 512
+    set     angle, 0
+    set     idx, 0
+    set     step, 3.1415927
+    mul     step, step, 10.0
+    div     step, step, N
+    pro     console
+    prs     "step="
+    prf     step
+    pre
+ :lp
+    rnd     temp
+    and     temp, temp, 0xffff
+    div     noise, temp, 65535.0
+    sin     val, angle
+    add     val, val, noise
+    mul     val, val, 1000.0
+    memw    buff, idx, val
+    inc     idx
+    add     angle, angle, step
+    if      idx < N, lp
+    
+    gos     drawGraph
+    gos     waitKey
+    gos     doLpf
+    gos     drawGraph
+end
+
+:waitKey
+    pro     msgbox
+    prs     "press any key"
+    pre 
+ret
+
+:drawGraph    
+    pro     graph
+    set     idx, 0
+ :lp2
+    memr    buff, idx, val
+    prf     val
+    inc     idx
+    if      idx < N, lp2
+ret
+
+:doLpf
+    usef    preV
+    set     idx, 0
+    sub     maxIdx, N, 2
+    memr    buff, idx, preV    
+    inc     idx    
+ :lp3
+    memr    buff, idx, val
+    mul     val, val, 0.08
+    mul     tmp, preV, 0.92
+    add     preV, val, tmp
+    memw    buff, idx, val
+    inc     idx
+    if      idx < maxIdx, lp3
+ret
+

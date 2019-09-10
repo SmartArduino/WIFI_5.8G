@@ -1,0 +1,45 @@
+#// ALPHABEAM DM Script Extension Interpreter example (sine)
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+    use  loopCnt                # long형 변수 선언
+    usef skipCnt                # float형 변수 선언
+    usef angle
+
+:main
+    pro  console
+    set  loopCnt, 100           # loopCnt = 100
+    set  angle, 0.0             # angle = 0.0
+ :mloop
+    sin  skipCnt, angle         # skipCnt = sin (angle)
+    mul  skipCnt, skipCnt, 25   # skipCnt *= 25
+    add  skipCnt, skipCnt, 25   # skipCnt += 25
+    gos  dispEst    
+    wait 10
+    add  angle, angle, 0.314159 # angle += 0.314159
+    dec  loopCnt                # loppCnt--
+    if   loopCnt > 0, mloop     # if (loopCnt > 0) goto moop
+  #mloop    
+end
+
+
+:dispEst
+    dec  skipCnt
+    prs  " "
+    if   skipCnt > 0, dispEst
+    prs  "* "
+    prf  skipCnt
+    pre
+ret

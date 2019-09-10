@@ -1,0 +1,37 @@
+#// array test 
+
+    memo    a1[10]
+    memo    a2[11]
+    memo    a3[12]
+    use     idx
+    use     data
+    
+:main
+    set     idx, 0
+    set     data, 0
+    pro     console
+:lp1
+    memw    a1, idx, data
+    inc     data
+    memw    a2, idx, data
+    inc     data
+    memw    a3, idx, data
+    inc     data
+    inc     idx
+    if      idx < 10, lp1
+
+    set     idx, 0
+:lp2    
+    memr    a1, idx, data
+    prd     data
+    prs     ","
+    memr    a2, idx, data
+    prd     data
+    prs     ","
+    memr    a3, idx, data
+    prd     data
+    pre
+    inc     idx
+    if      idx < 9, lp2
+end
+

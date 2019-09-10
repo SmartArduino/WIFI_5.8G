@@ -1,0 +1,68 @@
+#// ALPHABEAM DM Script Extension Interpreter example (array)
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+    use	 i
+    use  data
+    memo buff[4096]
+    
+:main
+    set  i,0
+ :lp
+    rnd  data               # data = 32bit random
+    and  data, data, 0xFFFF
+    memw buff, i, data
+    inc  i
+    if   i < 4096, lp
+    gos  drawGraph
+    pro  msgbox
+    prs  "press any key"
+    pre
+    gos  smooth
+    gos  drawGraph
+end    
+
+:drawGraph
+    set  i,0
+    pro  graph
+ :lp2
+    memr buff, i,data        
+    prh  data
+    inc  i
+    if   i < 4096, lp2
+ret
+
+# 3 point average smoothing
+:smooth
+    use  loop
+    use  sum
+    use  val
+    
+    set  loop, 10
+    set  i, 0
+ :lp3
+    memr buff, i, val
+    set  sum, val
+    inc  i
+    memr buff, i, val 
+    add  sum, sum, val
+    inc  i
+    memr buff, i, val 
+    add  sum, sum, val      
+    div  sum, sum, 3    
+    dec  i
+    memw buff, i, sum         # mem[i+1] = (mem[i]+mem[i+1]+mem[i+1]) / 3
+    if   i < 4094, lp3     
+ret

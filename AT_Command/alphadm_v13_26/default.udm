@@ -1,0 +1,13 @@
+# default setup for user defined FDP mask
+
+0, ud fdp mask0
+1, ud fdp mask1
+2, ud fdp mask2
+3, ud fdp mask3
+4, ud fdp mask4
+5, ud fdp mask5
+6, ud fdp mask6
+7, ud fdp mask7
+8, ud fdp mask8
+9, ud fdp mask9
+30, ud fdp mask30

@@ -1,0 +1,43 @@
+#// kangap con/discon test 
+:main
+    use  cnt
+    set  cnt, 10
+  :loop
+    gos  newline
+    gos  conn
+    wait 3000
+    gos  newline
+    gos  disconn
+    wait 1000
+    dec  cnt
+    if   cnt > 0, loop    
+  # loop
+    end
+# main
+
+:conn
+    pro console 
+    prs "--- connect ---"
+    pre
+    pro shell
+    prs "iwconfig sconn kangap"
+    pre
+    ret
+#conn
+
+:disconn
+    pro console 
+    prs "--- disconnect ---"
+    pre
+    pro shell
+    prs "iwconfig disconn"
+    pre
+    ret
+#disconn
+
+:newline
+    pro console
+    prs "--------------------------------"
+    pre
+    ret
+# newline

@@ -1,0 +1,505 @@
+1. Modifying build_ALPHABEAM_SDK
+    1) Change the value of RELEASE_LIB_VER
+        P2P     : /lib/p2p/libwf5000p2p.a or /lib/p2p/libwf6000p2p.a
+        ENTP    : /lib/entp/libwf5000entp.a or /lib/entp/libwf6000entp.a
+        ENTP_M  : /lib/entp/libwf5000entp_m.a or /lib/entp/libwf6000entp_m.a
+        GEN     : /lib/gen/libwf5000gen.a or /lib/gen/libwf6000gen.a
+    * the location of library files : /lib/
+    
+2. Modifying version_cm
+    1) Change the value in version_cm file
+        range : 6000 ~ 
+    * The version_cm file is used as user defined version instead of the version file which is released by chip vendor.
+    
+3. Modifying ict_cm_config.h
+    1) Starting as STA
+        Use "FEATURE_CM_APP_AUTO_START_STA" to directly run on infrastructure BSS mode when power is on.
+        Change the values of "ICT_JOIN_SSID", "ICT_PSK", and "ICT_AUTH_ENC_TYPE" as the values of a AP to be joined.
+            * The values "ICT_AUTH_TYPE", "ICT_PAIRWISE_CIPHER", and "ICT_GROUP_CIPHER" are automatically filled out after scanning process.
+    2) Starting as AP
+        Use "FEATURE_CM_APP_AUTO_START_AP" to directly run on AP mode when power is on.
+        Change the values of "ICT_AP_IP_ADDR", "ICT_AP_GW_ADDR", and "ICT_AP_NETMASK_ADDR".
+        
+4. Compiling Alphabeam SDK
+    * Xtensa Compiler or GCC Compiler should be installed before compiling Alphabeam SDK.
+    * See the "build_ALPHABEAM_SDK" file in the root directory for more detailed options.
+    1) Open a CMD window and go to the root which exists Alphabeam SDK in.
+    2) Type below commands.
+        >> alphabeam_cm.bat clean
+        >> alphabeam_cm.bat
+        If SF_LOADER is used, type below more.
+        >> alphabeam_cm.bat sf_loader clean
+        >> alphabeam_cm.bat sf_loader rom
+    3) Download the compiled image file to your WF5000/WF6000 module using Serial Flash loader.
+        A) Open AlphaDM program. (refer to "AlphaDM Manual.pdf") 
+        B) Place the cursor in the DM Shell input window below MDP window.
+        C) Push "Enter" key sequentially 5 times on your keyboard while turning on 
+        WF5000/WF6000 module. 
+        D) Select BANK of Serial Flash to download the compiled image file. Type below commands on DM Shell input window.
+            a) BANK 0 Selection
+            >> select 0 : Select BANK 0 to update SF loader and your compiled firmware image file.
+            >> Download "FW_*_ROM.bin"
+            b) BANK 1 Selection (Actual FW Running Area)
+            >> select 1 : Select BANK 1 to update your compiled firmware image file.
+            >> Download "FW_*.bin"
+            c) BANK 2 Selection
+            >> select 2 : Select BANK 2 to update your compiled firmware image file.
+            >> Download "FW_*.bin"
+
+5. Running Alphabeam SDK
+    1) Open a serial program using UART2 [baud-rate = 115200].
+    2) If "FEATURE_CM_APP_AUTO_START_STA" feature is used, WF5000/WF6000 module should be directly joined to the AP defined as "ICT_JOIN_SSID" when power is on.
+       Otherwise, type below to run WF5000/WF6000 as STA mode.
+        >> at *ict*start="SSID" "PASSWORD"
+    3) If WF5000/WF6000 module is joined to the AP, TCP Server, UDP Server, or UDP Client could run on it.
+       See Simle AT Command part.
+
+6. Basic AT Command
+    ate1 or ate0
+        ate1 to enable AT Command echo functionality
+        ate0 to disable AT Command echo funcitionality
+        
+    at *ict*swver
+        The SW version of WF5000/WF6000 defined by user should be displayed.
+        >> at *ict*swver=?
+        
+    at *ict*fwver
+        The FW name of WF5000/WF6000 should be displayed.
+        >> at *ict*swver=?
+        
+    at *ict*mac
+        The mac address of WF5000/WF6000 module should be displayed.
+        >> at *ict*mac=?
+        
+    at *ict*reset
+        WF5000/WF6000 module should be reset. 
+        0 = IRAM Reset / 1 = Flash Reset
+        >> at *ict*reset=0
+        >> at *ict*reset=1
+        
+    at *ict*debug
+        The MDP debug level of WF5000/WF6000 could be changed.
+        Range : 0 ~ 5
+        >> at *ict*debug=3
+
+    at *ict*uart
+        Use this command to open or close UART port is used for Alphabeam SDK.
+        at *ict*uart=<open/close> <uart no>
+        >> at *ict*uart=open 0
+        >> at *ict*uart=close 0
+        
+    at *ict*dm_enable
+        Use this command to enable or disable DM logs when UART0 port is used for Alphabeam SDK.
+        at *ict*adstart=<enable>
+            enable  : 0 - Disable / 1 - Enable
+        >> at *ict*dm_enable=1
+        >> at *ict*dm_enable=0
+        
+    at *ict*fwupgrade
+        Use this command to update Firmware by XMODEM protocol.
+        The firmware should be stored in BANK 2 of Serial Flash area.
+        >> at *ict*fwupgrade
+    
+    at *ict*fwverchange
+        Firmware version stored in Serial Flash could be changed.
+        It could be used to copy firmware from BANK2 to BANK 1 when the firmware version of BANK1 is higher than that of BANK 2.
+        at *ict*fwverchange=<bank_num> <ver_num>
+            bank_num    : 1 or 2
+            ver_num     : the version number to be changed
+        >> at *ict*fwverchange=1 1000
+        
+    at *ict*facreset
+        WF5000/WF6000 module should go to factory version state.
+        >> at *ict*facreset=0
+
+7. Simple AT Commnad
+    at *ict*dmshell
+        DM shell commands should be bypassed.
+        >> at *ict*dmshell=iwconfig scan
+        
+    at *ict*antver
+        Use this command to get the type of antenna used in WF5000/WF6000.
+        >> at *ict*antver=?
+            antenna_type    : 0 - Chip antenna / 1- U-FL antenna
+        
+    at *ict*setant
+        Use this command to select an antenna type
+        at *ict*setant=[antenna_type]
+            antenna_type    : 0 - Chip antenna / 1- U-FL antenna
+        >> at *ict*setant=0
+        >> at *ict*setant=1
+        
+    at *ict*traffic
+        Use this command to select TX data rate or set sensitivity level of RX 802.11b frames or 802.11n frames.
+        >> at *ict*traffic=?
+        >> at *ict*traffic=rate 11       /* static rate  : in case of 802.11b 11Mbps */
+        >> at *ict*traffic=rate max 11   /* max rate     : in case of 802.11b 11Mbps */
+        >> at *ict*traffic=rate auto     /* autometic rate */
+        >> at *ict*traffic=11b -90
+        >> at *ict*traffic=11n -80
+        
+    at *ict*extrssi
+        Use this command to fine-tuning the RSSI value of a received frame.
+        The tuning RSSI value is used to find maximum data rate.
+            Fixed default tuning value = -20
+            New RSSI = the RSSI value of a received frame + Fixed Default tuning value + Extra fine-tuned value 
+        >> at *ict*extrssi=-10
+        >> at *ict*extrssi=10
+    
+    at *ict*getmib
+    
+    at *ict*setmib
+    
+    at *ict*psmode
+    at *ict*hwps
+        Use this command to control power save mode of WF5000/WF6000.
+        at *ict*hwps=<mode>
+            mode
+                0 : Auto Mode
+                1 : Active Mode
+                2 : Power Save Mode
+        >> at *ict*hwps=0
+
+    at *ict*tx_pwr
+        Use this command to set or get TX power decrement level about how much lower than default TX power.
+        at *ict*tx_pwr=<dec_tx_pwr>
+            dec_tx_pwr : 0 ~ 10
+        >> at *ict*tx_pwr=?
+        >> at *ict*tx_pwr=1
+        
+    at *ict*mode
+        Use this command to set or get wireless mode.
+        at *ict*mode=<wireless mode>
+            wireless_mode
+                0 : G only
+                1 : BG
+                2 : BGN
+                3 : B only
+                4 : N only
+        >> at *ict*mode=2
+    
+    at *ict*apstart
+        Use this command to start as AP
+        at *ict*apstart=<essid> <channel> [key_mgmt] [pairwise_cipher] [group_cipher] [passphrase]
+            essid           : 32 characters maximum
+                              If there is space between the SSID string parameters, must use a 
+                              quotation.
+            channel         : 1 ~ 14
+            key_mgmt        : 0 - OPEN / 1 - WEP (Not Supported) / 2 - WPA_PSK / 3 - WPA2_PSK
+            pairwise_cipher : 0 - TKIP / 1 - CCMP
+            group_cipher    : 0 - TKIP / 1 - CCMP
+            passphrase      : ASCII passphrase must be between 8 and 64 characters.
+                              If there is space between the passphrase parameters, must use a 
+                              quotation.
+        >> at *ict*apstart=anytest 1 3 1 1 12345678
+        
+    at *ict*apstop
+        Use this command to stop as AP
+        >> at *ict*apstop
+    
+    at *ict*adstart
+        Use this command to start as Adhoc
+        at *ict*adstart=<essid> [channel] [key_mgmt] [passphrase]
+    
+    at *ict*adstop
+        Use this command to stop as Adhoc
+        Currently not tested.
+        
+    at *ict*start
+        If "FEATURE_CM_APP_AUTO_START_STA" feature is not used, use this command to operate a 
+        WF5000/WF6000 module.
+        >> at *ict*start
+        >> at *ict*start <SSID_OF_AP> [SEC_KEY_OF_AP]
+        >> at *ict*start ap_ssid 12345678
+        >> at *ict*start ap_ssid
+    
+	at *ict*start doit_newifi doit3305
+	
+	at *ict*start doit_newifi doit3305
+    at *ict*sconn
+        This command is equal to at *ict*start
+    
+    at *ict*stop
+        Same as AT command at *ict*disconnect
+        
+    at *ict*scan
+        If a WF5000/WF6000 module is not joined to an AP and the application status is not initial mode, use this command to operate a 
+        WF5000/WF6000 module.
+        >> at *ict*scan
+        
+    at *ict*disconnect
+        If a WF5000/WF6000 module is joined to an AP, use this command to be disconnected from the AP.
+        >> at *ict*disconnect
+        
+    at *ict*wps_pbc
+        >> at *ict*wps_pbc=any
+        
+    at *ict*wps_pin
+        >> Currently not supported
+        
+    at *ict*wps_cancel
+        >> Currently not supported
+        
+    at *ict*p2p_find
+        Use this command to operate as a P2P device and find another p2p devices.
+        >> at *ict*p2p_find
+        
+    at *ict*p2p_stop_find
+        Use this command to stop processing P2P find. ( in case of before connection )
+        >> at *ict*p2p_stop_find
+
+    at *ict*p2p_cancel
+        Use this command to cancel an ongoing P2P group formation related operation. ( in case of before connection )
+        at *ict*p2p_cancel
+        >> at *ict*p2p_cancel
+        
+    at *ict*p2p_connect
+        Use this command to connect with a P2P device which is searched by P2P find.
+        at *ict*p2p_connect=<P2P peer MAC address> [pbc] | [pin] [pin number]
+        >> at *ict*p2p_connect=02:0A:F5:99:86:CC pbc
+        >> at *ict*p2p_connect=02:0A:F5:99:86:CC pin 12345678 // Currently not supported
+
+    at *ict*p2p_disconnect
+        Same as AT command at *ict*disconnect
+        
+    at *ict*p2p_reject
+        Use this command to reject an ongoing P2P group formation related operation.
+        at *ict*p2p_reject=<P2P peer MAC address>
+        >> at *ict*p2p_reject=00:01:02:03:04:05
+    
+    at *ict*p2p_config
+        Use this command to configure P2P information.
+        at *ict*p2p_config=<type> <method> <PIN#>
+            <type>
+                0           : Passive ??Automatically process P2P negotiation by 
+                WF5000/WF6000.
+                1           : Active ??Host directly controlled P2P negotiation using P2P AT command 
+            <Method>
+                0           : PBC
+                1           : PIN
+                2           : BOTH
+            <PIN#>
+                PIN number  : 8 digits, default PIN number is 00000000
+        >> at *ict*p2p_config=?
+        >> at *ict*p2p_config=1 2 12345678
+        
+    at *ict*eapset
+        Use this command to configure the EAP parameters for connecting to an Enterprise security AP
+        at *ict*eapset=<EAP SET NUM> <EAP Parameters>
+            EAP SET NUM     | Parameters                | Description
+            0               | tls, peap, ttls           | Setting eap outer method type
+            1               | Maximum of 64bytes ASCII  | Setting user identity
+            2               | Maximum of 64bytes ASCII  | Setting anonymous user identity
+            3               | Maximum of 128bytes ASCII | Setting user password
+            4               | Maximum of 128bytes ASCII | Setting EAP key password
+        >> at *ict*eapset=0 ttls 1 "wifi-user" 4 "wifi#11"
+    
+    at *ict*eapcert
+        Use this command to configure the EAP Certification parameters for connecting to an Enterprise security AP.
+        at *ict*eapcert=<CERT TYPE> <EAP CERT Parameters>
+            CERT TYPE   | EAP CERT Parameters       | Description
+            0           | MSCHAPv2                  | Setting EAP inner method type
+            1           | 0                         | Setting phase1 value in PEAP
+            2           | Maximum of 64bytes ASCII  | CA Certificate File name
+            3           | Maximum of 64bytes ASCII  | TLS Client Certificate File name
+            4           | Maximum of 64bytes ASCII  | TLS Private key File name
+        >> at *ict*eapcert=0 MSCHAPv2 2 ca.pem
+    
+    at *ict*nwstatus
+        Use this command to get network status.
+        >> at *ict*nwstatus=?
+    
+    at *ict*nv_mem
+        Use this command to write or read a ssid and a pass-phrase at nv memory.
+        >> at *ict*nv_mem write test_ap 12345678
+        >> at *ict*nv_mem write test_ap 
+        >> at *ict*nv_mem read
+        
+    at *ict*ipconfig 
+        Use this command to get or set network information of STA
+        at *ict*ipconfig=<Static/DHCP> <IP> <SUBNET> <GATEWAY> <DNS>
+        >> at *ict*ipconfig=?
+        >> at *ict*ipconfig=1
+        >> at *ict*ipconfig=0 192.168.1.25 255.255.255.0 192.168.1.1 168.126.63.1
+        
+    at *ict*apnset
+        Use this command to get or set network information of AP
+        at *ict*apnset=<IP> <SUBNET> <GATEWAY> <LEASE_IP_MIN> <LEASE_IP_MAX>
+        >> at *ict*apnset=?
+        >> at *ict*apnset=192.168.10.1 255.255.255.0 192.168.10.1 20 200
+        
+    at *ict*data_mode
+        WF5000/WF6000 should send data through socket descriptor which is targeted as data pipe.
+        TCP or UDP socket should be created before using data mode.
+        at *ict*data_mode=<sd>
+        at+data=[data]
+        [data]
+        +++
+        >> at *ict*data_mode=?
+        >> at *ict*data_mode=0
+        >> at+data=1234567890   /* the string value 1234567890 should be concerned with data and should be transmitted to counter part. */
+        >> 1234567890   /* the string value 1234567890 should be concerned with data and should be transmitted to counter part. */
+        >> +++  /* Returning to AT command mode */
+        
+    at *ict*create_socket
+        Use this command to crate TCP Server, UDP Server, or UDP Client socket
+        >> at *ict*create_socket ts 50010        : TCP Server using port number 50010
+        >> at *ict*create_socket ts 50011        : TCP Server using port number 50011
+            NOTE : Multi TCP Server could be supported.
+        >> at *ict*create_socket us 50020        : UDP Server using port number 50020
+        >> at *ict*create_socket uc 50030 192.168.0.10   : UDP Client using port number 50030 to send packet targeted to the ip address 192.168.0.10 
+
+    at *ict*close_socket
+        Use this command to close sockets.
+        >> at *ict*close_socket          : Close all of created sockets.
+        >> at *ict*close_socket 50010    : Close the created socket with port number 50010.
+
+    at *ict*show_socket
+        Use this command to show all of created sockets.
+        >> at *ict*show_socket
+
+    at *ict*tcp_disconnect
+        Use this command to disconnect Remote TCP Client from Local TCP Server.
+        at *ict*tcp_disconnect=<socket_descriptor> <ip_addr> <rport>
+            socket_descriptor   : socket descriptor of the Local TCP Server
+            ip_addr             : Remote IP address
+            rport               : Remote Port Number
+        >> at *ict*tcp_disconnect 0 192.168.10.100 57628
+        
+    at *ict*send_pkt
+        Use this command to send packtes destined to the ip address of created socket.
+        at *ict*send_pkt=<socket_type> <socket_descriptor> <rport> <ip_address>
+            socekt_type         : TCP Client (1) / TCP Server (4) / UDP Client (2) / UDP Server (8)
+            socket_descriptor   : socket descriptor of the Local Socket
+            rport               : Remote Port Number
+            ip_addr             : Remote IP address
+        >> at *ict*send_pkt 1 0 50000 192.168.1.103
+        
+    at *ict*send_uc_pkt
+        Use this command to send UDP Client packets destined to the ip address of created UDP Client socket.
+        >> at *ict*send_uc_pkt 2     : Send UDP frame to a destination assinged as the socket descriptor number 2.
+
+    at *ict*stop_uc_pkt
+        Use this command to send UDP Client packets destined to the ip address of created UDP Client socket.
+        >> at *ict*stop_uc_pkt 2     : Stop Sending UDP frame to a destination assinged as the socket descriptor number 2.
+
+    at *ict*loopback_test
+        Use this command for loopback test.
+        >> at *ict*loopback_test on
+        >> at *ict*loopback_test off
+        
+    at *ict*dnsquery
+        Use this command to get a IP address of a special domain name using DNS query.
+        >> at *ict*dnsquery=www.google.com
+        
+    at *ict*ping
+        ping could be sent through application layer.
+        at *ict*ping=<Number> <Destination IP Address> <Length>
+        >> at *ict*ping=10 192.168.1.1 1460
+    
+    at *ict*httpd_port
+        Use this command to set or get HTTP Server Port
+        at *ict*httpd_port=?     : get command
+        at *ict*httpd_port=[Port]: set command 
+        >> at *ict*httpd_port=?
+        >> at *ict*httpd_port=80
+        
+    at *ict*httpd_start
+        Use this command to start HTTP Server
+        >> at *ict*httpd_start
+        
+    at *ict*httpd_stop
+        Use this command to stop HTTP Server
+        >> at *ict*httpd_stop
+    
+    at *ict*httpget
+        Use this command to request HTTP GET message to HTTP server
+        at *ict*httpget=<ip/domain>:<port><uri>
+            ip/domain   : domain name or IP address of HTTP server
+            port        : port number of HTTP server
+            uri         : URI
+        >> at *ict*httpget=192.168.0.1/index.shtml
+    
+    at *ict*httppost
+        Use this command to request HTTP POST message to HTTP server
+        at *ict*httppost=<ip/domain>:<port><uri>
+            ip/domain   : domain name or IP address of HTTP server
+            port        : port number of HTTP server
+            uri         : URI
+        >> at *ict*httppost=192.168.0.1/index.shtml
+        
+    at *ict*httpstop
+        Use this command to close http session
+        at *ict*httpstop=<type>
+            0 : HTTP session
+            1 : HTTPS session
+        >> at *ict*httpstop=1
+    
+    at *ict*dns_start
+        Use this command to start DNS server
+        at *ict*dns_start
+    
+    at *ict*dns_stop
+        Use this command to stop DNS server
+        at *ict*dns_stop
+    
+    at *ict*mqtt_get
+    
+    at *ict*mqtt_set
+    
+    at *ict*mqtt_pub
+    
+    at *ict*mqtt_sub
+    
+    at *ict*gmmp_get
+    
+    at *ict*gmmp_set
+    
+    at *ict*gmmp_reg
+    
+    at *ict*gmmp_unreg
+    
+    at *ict*gmmp_csend
+    
+    at *ict*gmmp_send
+    
+    at *ict*gmmp_close
+    
+    at *ict*country
+        Use this command to set country code for WF5000/WF6000.
+        at *ict*country=<country_name>
+            country_name        : The country code
+                "AT", "AU", "BE", "BR", "CA", "CH", "CN", "CY", 
+                "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB", "HK", "HU", 
+                "ID", "IE", "IL", "IO", "IN", "IS", "IT", "JP", "KR", "LU",         
+                "LV", "MY", "NL", "NO", "NZ", "PH", "PL", "PT", "SE", "SG",          
+                "SI", "SK", "TH", "TW", "US", "UE", "UL", "UX", "ZA", "EU"
+
+        >> at *ict*country=?
+        >> at *ict*country=JP
+        >> at *ict*country=KR
+        
+8. Test AT Commnad
+    at *ict*sf_fatfs_test
+    
+    at *ict*json_test
+        Use this command to run JSON sample codes.
+        
+    at *ict*hb_test
+        Use this command to start or stop heartbeat test.
+        at *ict*hb_test=<socket_type> <socket_descriptor> <rport> <ip_address>
+            socekt_type         : TCP Client (1) / TCP Server (4) / UDP Client (2) / UDP Server (8)
+            socket_descriptor   : socket descriptor of the Local Socket
+            rport               : Remote Port Number
+            ip_addr             : Remote IP address
+        >> at *ict*send_pkt 1 0 50000 192.168.1.103
+        
+    at *ict*aes_test
+        Use this command to execute AES test
+        >> at *ict*aes_test=init
+        >> at *ict*aes_test=deinit
+        >> at *ict*aes_test=data
+        
+    at *ict*gpio_test
+        Use this command to execute GPIO test
+        >> at *ict*gpio_test

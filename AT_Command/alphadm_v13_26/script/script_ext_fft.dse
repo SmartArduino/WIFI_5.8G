@@ -1,0 +1,86 @@
+#// ALPHABEAM DM Script Extension Interpreter example (fft)
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+    memo    real[256]
+    memo    imag[256]
+    use     size
+    usef    scale
+    use     bMag    
+    
+:main
+    set     size, 256
+    gos     genSinData
+    set     bMag, 0
+    set     scale, 255.0
+    gos     drawGraph       
+    fft     real, imag, size
+    set     bMag, 1
+    set     scale, 1.0
+    gos     drawGraph    
+    ifft    real, imag, size
+    set     bMag, 0
+    set     scale, 1.0
+    gos     drawGraph
+end    
+
+    use     n
+    use     sz
+    usef    angle
+    usef    f1
+    usef    f2
+    usef    f3
+    
+:genSinData   
+    set     n, 0
+    set     angle, 0
+ :lp1
+    sin     f1, angle
+    mul     f2, angle, 3.0
+    cos     f2, f2
+    div     f2, f2, 1.0
+    add     f1, f1, f2
+    memw    real, n, f1
+    memw    imag, n, 0.0
+    add     angle, angle, 0.628
+    inc     n
+    if      n < size, lp1
+ret    
+    
+:drawGraph    
+    set     n, 0
+    div     sz, size, 2
+  :lp2
+    memr    real, n, f1
+    memr    imag, n, f2
+    if      bMag == 0, skipMag
+    mul     f1, f1, f1
+    mul     f2, f2, f2
+    add     f1, f1, f2
+    sqrt    f1, f1
+ :skipMag    
+    mul     f1, f1, scale
+    pro     graph    
+    prf     f1
+    pro     console 
+    prd     n
+    prs     ","
+    prf     f1
+    pre
+    inc     n
+    if      n < sz, lp2
+ret
+    
+

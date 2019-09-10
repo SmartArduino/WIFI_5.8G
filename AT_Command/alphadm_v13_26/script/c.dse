@@ -1,0 +1,18 @@
+#// time test 
+    use     i
+    use     pt, ct
+    usef    fd
+:main
+    set     i, 0
+    time    pt
+:lp 
+    time    ct
+    sub     ct, ct, pt
+#    sqrt    fd, 0.0
+    inc     i
+    if      ct < 1000, lp
+    pro     console
+    prd     i
+    pre
+end
+

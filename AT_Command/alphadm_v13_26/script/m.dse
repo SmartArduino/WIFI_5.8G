@@ -1,0 +1,31 @@
+#// array test 
+	memo    buff[16]
+:main
+    memw    buff, 0, 1.0
+    memw    buff, 1, 2.0
+    memw    buff, 2, 3
+    memw    buff, 3, 4
+    memw    buff, 4, 5
+    memw    buff, 5, 6
+    memw    buff, 6, 7
+    memw    buff, 7, 8
+    memw    buff, 8, 9
+    memw    buff, 9, 10
+    memw    buff, 10, 11
+    memw    buff, 11, 12
+    memw    buff, 12, 13
+    memw    buff, 13, 14
+    memw    buff, 14, 15
+    memw    buff, 15, 16   
+
+    use     i
+    usef    d
+    pro     console
+    set     i, 0
+:lp    
+    memr    buff, i, d
+    prf     d
+    pre
+    inc     i
+    if      i < 16, lp    
+end

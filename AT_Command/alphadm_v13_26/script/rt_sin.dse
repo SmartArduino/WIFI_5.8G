@@ -1,0 +1,37 @@
+#// disp random sine data
+
+    usef    angle
+    usef    data
+    usef    step
+    use     rndd
+    use     cnt
+    
+:main
+    set     cnt, 10000
+ :reset    
+    set     angle, 0.0
+    set     step, 0.001
+ :lp    
+    sin     data, angle
+    mul     data, data, 1000.0
+    rnd     rndd
+    and     rndd, rndd, 0xffff
+    div     rndd, rndd, 256
+    add     data, data, rndd
+    pro     graph 
+    prf     data
+    pro     console
+    prf     data
+    prs     ","
+    prd     cnt
+    pre
+    dec     cnt
+    if      cnt == 0, end
+    wait    1
+    add     angle, angle, step
+    add     step, step, 0.001
+    if      step < 0.628, lp
+    go      reset
+:end    
+end    
+

@@ -1,0 +1,102 @@
+#// ALPHABEAM DM Script Extension Interpreter example (math)
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+    usef val
+    usef data
+:main
+    pro console
+    set val, 3.1415927
+    set data, 6
+    lsf val, val, data
+    prs "lsh="
+    prf val
+    pre 
+
+    prs "--- math function test ---"
+    pre
+
+    sin data, val
+    prs "sin="
+    prf data
+    pre
+
+    cos data, val
+    prs "cos="
+    prf data
+    pre
+    
+    tan data, val
+    prs "tan="
+    prf data
+    pre
+
+    sinh data, val
+    prs "sinh="
+    prf data
+    pre
+
+    cosh data, val
+    prs "cosh="
+    prf data
+    pre
+    
+    tanh data, val
+    prs "tanh="
+    prf data
+    pre
+
+    asin data, val
+    prs "asin="
+    prf data
+    pre
+
+    acos data, val
+    prs "acos="
+    prf data
+    pre
+    
+    atan data, val
+    prs "atan="
+    prf data
+    pre
+
+    exp data, val
+    prs "exp="
+    prf data
+    pre
+
+    log data, val
+    prs "log="
+    prf data
+    pre
+
+    ln data, val
+    prs "ln="
+    prf data
+    pre
+
+    sqrt data, val
+    prs "sqrt="
+    prf data
+    pre
+
+    set data,1.5
+    set val, 4
+    pow data, data, val  # data = power (data, val), 
+    prs "pow="
+    prf  data
+    pre
+end

@@ -1,0 +1,60 @@
+#// ALPHABEAM DM Script Extension Interpreter example
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+    use	 addr, data, result
+    lib  "script_lib.dse"
+:main    
+    set  addr, 0x840b0000
+    file "out.txt"
+    cls
+    
+ :loop
+    gos  shellout
+    gos  getNumber
+    gos  dispMemData
+    add  addr,addr,4
+    if   addr < 0x840b0010, loop
+ #loop end
+    gos  li2big
+    gos  dispMemData
+end
+
+:shellout
+    # mem dump 0x840b0000 16 32
+    pro  shell
+    prs  "mem dump "
+    prh  addr
+    prs  " 16 32"
+    pre
+ret
+
+:dispMemData
+    pro  file
+    prs  "addr=0x"
+    prh  addr
+    prs  ", value=0x"
+    prh  data
+    prs  "\n"
+    pre
+ret
+
+:getNumber
+    gets
+    gets
+    gets
+    getn addr, result, 16   # addr
+    getn data, result, 16   # data
+ret

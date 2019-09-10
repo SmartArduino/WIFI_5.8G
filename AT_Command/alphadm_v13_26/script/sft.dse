@@ -1,0 +1,82 @@
+#// flash test
+    use  i
+    use  addr
+    use  size
+    use  step
+    use  timeout
+    use  pt
+    use  ct
+    
+:main    
+    set  i, 0
+:lp1
+    pro  console
+    prs  "00000000 W:test count "
+    prd  i
+    pre
+    pro  shell
+    
+    set  addr, 0x50220000    
+:lp2
+    set  step, 0x20000
+    set  size, 32
+    if   addr < 0x50300000, skip1
+    set  step, 0x40000
+    set  size, 64
+:skip1  
+    gos  flash        
+    time pt
+    gets                        # skip line "flash test..."
+
+    set  timeout, 4
+:get_sts    
+    gets                        # get line result string    
+    sstr "fail", fail
+    sstr "OK", ok
+    dec  timeout
+    if   timeout == 0, timout_err
+    go   get_sts
+    
+:ok    
+    time ct
+    sub  ct,ct,pt
+    pro  console
+    prs  "time="
+    prd  ct
+    pre
+    
+    add  addr, addr, step
+    
+    if   addr <= 0x503C0000, lp2
+        
+    inc  i
+    if   i <= 1000, lp1
+    
+    pro  msgbox
+    prs  "complete"
+    pre
+    end
+
+:timout_err    
+    pro  console
+    prs  "00000000 E:timeout error"
+    pre
+    go   next
+    
+:fail
+    pro  msgbox
+    prs  "failed"
+    pre
+    end
+        
+:flash
+    pro  shell
+    prs  "flash test "
+    prh  addr
+    prs  " "
+    prd  size
+    pre
+    #wait ms
+ret
+    
+    

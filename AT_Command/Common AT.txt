@@ -1,0 +1,23 @@
+1.Obtain module mac address
+ at *ict*mac=?
+
+2.Connect Route
+at *ict*start doit_newifi doit3305
+
+3.Stop Route
+at *ict*stop
+
+4.Debug
+ at *ict*dm_enable
+        Use this command to enable or disable DM logs when UART0 port is used for Alphabeam SDK.
+        at*ict*adstart=<enable>
+            enable  : 0 - Disable / 1 - Enable
+        >> at *ict*dm_enable=1
+        >> at *ict*dm_enable=0
+
+5.
+AT*ICT*SOCKET=1
+AT *ICT*CONNECT=0 115.28.192.187  9009
+
+at *ict*create_socket tc  115.28.192.187  9009
+at *ict*tcp_connect=5 115.28.192.187  9009

@@ -1,0 +1,70 @@
+#// TCP out test
+
+    use     i
+    use     power
+:main
+    tcpo    "192.168.70.30", 5025   # 서버 접속 
+    pro     tcp                     # tcp로 문자열 출력방향 설정
+    prs     "*RST; *OPC?\r\n"         # 문자열 버퍼 출력
+    pre                             # 버퍼 전송
+    prs     "*CLS; *OPC?\r\n"         # 문자열 버퍼 출력
+    pre                             # 버퍼 전송 
+    prs     "ROUTe:GPRF:MEAS:SCENario:SALone RF1C, RX1\r\n"
+    prs     "CONFigure:GPRF:MEAS:RFSettings:EATTenuation 25\r\n"
+    prs     "CONFigure:GPRF:MEAS:POWer:LIST ON\r\n"
+    prs     "CONFigure:GPRF:MEAS:POWer:LIST:STARt 0\r\n"
+
+    prs     "CONFigure:GPRF:MEAS:POWer:FILTer:TYPE BANDpass\r\n"
+    prs     "CONFigure:GPRF:MEAS:POWer:SCOunt 1\r\n"
+    prs     "CONFigure:GPRF:MEAS:POWer:REPetition SINGleshot\r\n"
+    prs     "CONFigure:GPRF:MEAS:POWer:FILTer:GAUSs:BWIDth 10Mhz\r\n"
+    pre
+    prs     "CONFigure:GPRF:MEAS:POWer:LIST:"
+    set     i, 0
+:lp    
+    prs     "FREQuency "
+    prd     i
+    prs     ", 834.00Mhz; "
+    pre
+    inc     i
+    if      i < 12, lp
+    prs     "\r\n"
+    pre
+
+    set     i, 0
+    set     power, 35
+    prs     "CONFigure:GPRF:MEAS:POWer:LIST:"
+:lp2    
+    prs     "ENPower "
+    prd     i
+    prs     " "
+    prd     power
+    prs     "; "
+    inc     i
+    dec     power, power, 5
+    pre
+    if      i < 12, lp2
+    prs     "\r\n"
+    pre
+    
+    prs     "CONFigure:GPRF:MEAS:POWer:FILTer:GAUSs:BWIDth 10.000Mhz;\r\n"
+    prs     "CONFigure:GPRF:MEAS:POWer:SLENgth 10000.000us\r\n"
+    prs     "CONFigure:GPRF:MEAS:POWer:MLENgth 9000.000us;\r\n"
+    prs     "TRIGger:GPRF:MEAS:POWer:OFFSet 5.000us;\r\n"
+    prs     "TRIGger:GPRF:MEAS:POWer:SOURce IF Power\r\n"
+    prs     "TRIGger:GPRF:MEAS:POWer:MODE ONCE\r\n"
+    prs     "TRIGger:GPRF:MEAS:POWer:THReshold 0\r\n"
+    prs     "TRIGger:GPRF:MEAS:POWer:SLOPe REDGe\r\n"
+    prs     "CONFigure:GPRF:MEAS:POWer:TOUT 1200ms\r\n"
+    prs     "CONFigure:GPRF:MEAS:RFSettings:EATTenuation 0\r\n"    
+    prs     "CONFigure:GPRF:MEAS:POWer:LIST:STOP 11\r\n"
+    pre
+
+    prs     "INIT:GPRF:MEAS:POWer\r\n"
+    prs     "FETCh:GPRF:MEAS:POWer:CURRent?\r\n"
+    pre
+       
+    tcpc                            # tcp 접속 해제
+end
+
+

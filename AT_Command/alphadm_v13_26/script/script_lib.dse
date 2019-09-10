@@ -1,0 +1,48 @@
+#// ALPHABEAM DM Script Extension Interpreter example (library)
+#   interpreter command list:
+#       preprocessor : lib / use / usef / memo
+#       set / inv
+#       sin / cos / tan / asin / acos / atan / sinh / cosh / tanh 
+#       exp / log / ln/ pow / sqrt / rnd / fft / ifft
+#       inc / dec
+#       add / sub / mul / div / and / or / xor / rsf / lsf / mod
+#       go  / gos / ret / wait / end 
+#       if
+#       pro / prs / prd / prh / prb / prf / pre / file
+#       gets / getn
+#       memr / memw
+#       cls
+#       time
+
+# script library
+
+:debugOff
+    pro  shell
+    prs  "debug 0\rdebug fd off"
+    pre
+    wait 100
+ret
+
+:debugOn
+    pro  shell
+    prs  "debug 4\rdebug fd on"
+    pre
+ret
+    
+:li2big    
+    use  t1
+    use  t2
+    use  t3
+    use  t4
+    
+    rsf  t1,data,24
+    rsf  t2,data,8
+    and  t2,t2,0xFF00
+    lsf  t3,data,8
+    and  t3,t3,0xFF0000
+    lsf  t4,data,24
+    or   t1,t1,t2
+    or   t1,t1,t3
+    or   t1,t1,t4
+    set  data,t1
+ret    

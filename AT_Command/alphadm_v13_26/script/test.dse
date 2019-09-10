@@ -1,0 +1,21 @@
+#// incremental register writing test
+
+   use val
+:main
+   set val,1
+ :loop
+   gos writereg
+   inc val
+   if val < 100, loop
+end
+
+:writereg
+   use temp
+   set temp, val
+   lsf temp, temp, 16
+   pro shell
+   prs "mem set 90000000 "
+   prh temp
+   prs " 32"
+   pre
+ret      

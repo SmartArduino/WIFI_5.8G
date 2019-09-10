@@ -1,0 +1,220 @@
+#// LTE RT5300 rxcal
+
+    use     addr
+    use     data
+    use     result
+
+    use     a
+    use     flt_dc
+    use     in
+    use     i
+    use     q
+    use     min_i
+    use     min_q
+    use     min_iidx
+    use     min_qidx
+    use     min_i2
+    use     min_q2
+    use     temp
+:main
+    file    "d:\\test.txt"
+    
+    gos     initSystem
+    set     a, 0
+    set     flt_dc, 0xFF
+    set     min_iidx, 0
+    set     min_qidx, 0
+    
+:loop_a
+    lsf     in, a, 9
+    or      in, in, flt_dc
+    lsf     temp, in, 16
+    or      in, in, temp
+    set     addr, 0x900c5010
+    set     data, in
+    gos     memset
+    wait    1
+    set     addr, 0x90090070
+    wait    20
+    gos     memget
+    set     i, data
+    set     addr, 0x90090074
+    wait    20
+    gos     memget
+    set     q, data
+    lsf     i, i, 20
+    rsf     i, i, 20
+    lsf     q, q, 20
+    rsf     q, q, 20    
+
+    set     data, i
+    gos     abs
+    set     i, data
+
+    set     data, q
+    gos     abs
+    set     q, data
+
+    if      a != 0, main_1
+    set     min_i, i
+    set     min_q, q
+:main_1
+    if      min_i <= i, main_2
+    set     min_i, i
+    set     min_iidx, a
+:main_2    
+    if      min_q <= q, main_3
+    set     min_q, q
+    set     min_qidx, a
+:main_3    
+    gos     wrFile
+
+    inc     a
+    if      a < 32, loop_a
+
+    
+    pro     file    
+    prs     "[result]\n"
+    prs     "i="
+    prd     min_iidx
+    prs     ",q="
+    prd     min_qidx
+    prs     "\n"
+    pre
+
+    set     min_i2, min_iidx
+    set     min_q2, min_qidx
+    set     a, 0
+:main_4
+    lsf     i, min_i2, 9
+    or      i, i, a
+    lsf     q, min_q2, 9
+    or      q, q, a
+    lsf     in, i, 16
+    or      in, in, q
+    set     addr, 0x900c5010
+    set     data, in
+    gos     memset
+
+    set     addr, 0x90090070
+    gos     memget
+    set     i, data
+    set     addr, 0x90090074
+    gos     memget
+    set     q, data
+
+    lsf     i, i, 20
+    rsf     i, i, 20
+    lsf     q, q, 20
+    rsf     q, q, 20    
+
+    set     data, i
+    gos     abs
+    set     i, data
+
+    set     data, q
+    gos     abs
+    set     q, data
+    
+    if      a != 0, main_5    
+    set     min_i, i
+    set     min_q, q
+:main_5
+    if      min_i <= i, main_6
+    set     min_i, i
+    set     min_iidx, a
+:main_6    
+    if      min_q <= q, main_7
+    set     min_q, q
+    set     min_qidx, a
+:main_7    
+    gos     wrFile
+
+    inc     a        
+    if      a < 512, main_4
+    
+    pro     file    
+    prs     "[result]\n"
+    prs     "i="
+    prd     min_iidx
+    prs     ",q="
+    prd     min_qidx
+    prs     "\n"
+    pre
+    
+    gos     closeSystem
+end
+
+:wrFile
+    pro     file
+    prd     a
+    prs     ","
+    prd     i
+    prs     ","
+    prd     q
+
+    prs     "\n"
+    pre
+ret    
+
+:memset
+    pro     shell
+    prs     "mem set "
+    prh     addr
+    prs     " "
+    prh     data
+    prs     " 32"
+    pre
+ret    
+    
+:memget
+    pro     shell
+    prs     "mem get "
+    prh     addr
+    prs     " 32"
+    pre
+    gos     getNo
+ret
+
+:getNo
+    gets    
+    getn    addr, result, 16
+    getn    data, result, 16
+ret
+
+:dispData
+    pro     console
+    prs     ">>"
+    prh     addr,
+    prs     ","
+    prh     data
+    pre
+ret
+
+:initSystem
+    pro     shell
+    prs     "echo off"
+    pre
+    prs     "cmdset 4grxs 1 300 3 0 1"
+    pre
+    prs     "cmdset 4grstas 62"
+    pre
+    prs     "cmdset 4gagc 0 0"
+    pre
+    prs     "mem set 900c3010 24 32"
+    pre
+    prs     "mem set 900900d8 1 32"
+    pre
+ret    
+
+:abs
+    if      data >= 0, abs_2
+    mul     data, data, -1
+:abs_2
+ret
+
+:closeSystem
+    pro     shell
+    prs     "echo on"
+    pre
+ret
